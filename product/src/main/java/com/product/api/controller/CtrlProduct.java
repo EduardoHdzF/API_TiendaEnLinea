@@ -1,9 +1,10 @@
-package com.product.api;
+package com.product.api.controller;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import com.product.api.*;
+import com.product.api.entity.Category;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
