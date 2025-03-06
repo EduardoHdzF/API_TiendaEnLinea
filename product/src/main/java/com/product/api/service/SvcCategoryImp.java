@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.product.api.entity.Category;
 import com.product.api.repository.RepoCategory;
-import com.product.exception.DBAccessException;
+import com.product.exception.ApiException;
 
 @Service
 public class SvcCategoryImp implements SvcCategory{
@@ -22,7 +22,7 @@ public class SvcCategoryImp implements SvcCategory{
 		try {
 			List<Category> categories = repo.getCategories();			
 		}catch (DataAccessException e) {
-			throw new DBAccessException(e);
+			throw new ApiException(HttpStatus.BAD_REQUEST, "Error en la consulta de categorías. Verifique los parámetros enviados.");			
 		}
 		return new ResponseEntity<>(repo.getCategories(), HttpStatus.OK);
 	}
