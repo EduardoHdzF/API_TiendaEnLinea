@@ -14,7 +14,7 @@ import com.product.api.service.SvcCategory;
 
 @RestController
 @RequestMapping("/category")
-public class CtrlProduct {
+public class CtrlCategory {
 	
 	@Autowired
 	SvcCategory svc;
