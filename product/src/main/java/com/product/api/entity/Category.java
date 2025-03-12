@@ -1,26 +1,30 @@
-package com.product.api;
+package com.product.api.entity;
 
-import java.util.ArrayList;
-import java.util.List;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
+@Entity
+@Table(name = "Category")
 public class Category {
-		
+	
+	@Id
 	private int category_id;
     private String category;
     private String tag;
     private int status;
 
-    //TODO Implementar constructor, status siempre 1
+    public Category() {
+        
+    }
+    
     /**
      * Constructor de categoria.
      * 
+     * @param id Identificador de la categoria.
      * @param category Categoria.
      * @param tag Etiqueta de la categoria.
      */
-    public Category() {
-    	
-    }
-    
     public Category(int id, String category, String tag){
     	super();
         this.category_id = id;
