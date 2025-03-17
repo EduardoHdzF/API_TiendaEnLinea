@@ -20,11 +20,18 @@ public class SvcCategoryImp implements SvcCategory{
 	@Override
 	public ResponseEntity<List<Category>> getCategories() {
 		try {
-			List<Category> categories = repo.getCategories();			
+			List<Category> categories = repo.getCategories();
+			//List<Category> categories = repo.findByStatus(1);
+			//List<Category> categories = repo.findByStatusOrderByCategory(1);			
 		}catch (DataAccessException e) {
 			throw new ApiException(HttpStatus.BAD_REQUEST, "Error en la consulta de categorías. Verifique los parámetros enviados.");			
 		}
 		return new ResponseEntity<>(repo.getCategories(), HttpStatus.OK);
+	}
+	
+	private void validateCategoryId(int id) {
+		if(repo.findById(id).isEmpty())
+			throw new ApiException(HttpStatus.NOT_FOUND, "El id de la categoría no existe");
 	}
 
 }
