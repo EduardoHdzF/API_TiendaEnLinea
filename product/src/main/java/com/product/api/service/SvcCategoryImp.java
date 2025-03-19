@@ -8,9 +8,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.product.api.dto.DtoCategoryIn;
 import com.product.api.entity.Category;
 import com.product.api.repository.RepoCategory;
+import com.product.commons.dto.ApiResponse;
 import com.product.exception.ApiException;
+import com.product.exception.DBAccessException;
 
 @Service
 public class SvcCategoryImp implements SvcCategory{
@@ -20,14 +23,40 @@ public class SvcCategoryImp implements SvcCategory{
 	@Override
 	public ResponseEntity<List<Category>> getCategories() {
 		try {
-			List<Category> categories = repo.getCategories();
-			//List<Category> categories = repo.findByStatus(1);
-			//List<Category> categories = repo.findByStatusOrderByCategory(1);			
+			return new ResponseEntity<>(repo.getCategories(), HttpStatus.OK);
 		}catch (DataAccessException e) {
 			throw new ApiException(HttpStatus.BAD_REQUEST, "Error en la consulta de categorías. Verifique los parámetros enviados.");			
 		}
-		return new ResponseEntity<>(repo.getCategories(), HttpStatus.OK);
+		
 	}
+	
+	@Override
+	public ResponseEntity<List<Category>> getActiveCategories(){
+		try {
+			return new ResponseEntity<>(repo.findByStatusOrderByCategory(1), HttpStatus.OK);
+		}catch (DataAccessException e) {
+			throw new ApiException(HttpStatus.BAD_REQUEST, "Error en la consulta de categorías. Verifique los parámetros enviados.");			
+		}
+	}
+	
+	@Override
+	public ResponseEntity<ApiResponse> createCategory(DtoCategoryIn in){
+		try {
+			
+			repo.createCategory(in.getCategory(), in.getTag());
+			return new ResponseEntity<>(new ApiResponse("La categoría ha sido registrada"), HttpStatus.CREATED);
+			
+		}catch (DataAccessException e) {
+			if (e.getLocalizedMessage().contains("region.region"))
+				throw new ApiException(HttpStatus.CONFLICT, "El nombre de la región ya está registrado");
+			if (e.getLocalizedMessage().contains("region.tag"))
+				throw new ApiException(HttpStatus.CONFLICT, "El tag de la región ya está registrado");
+			
+			throw new DBAccessException(e);
+		}
+		
+	}
+	
 	
 	private void validateCategoryId(int id) {
 		if(repo.findById(id).isEmpty())
