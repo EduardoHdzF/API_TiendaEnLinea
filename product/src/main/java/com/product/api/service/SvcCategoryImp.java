@@ -48,9 +48,9 @@ public class SvcCategoryImp implements SvcCategory{
 			
 		}catch (DataAccessException e) {
 			if (e.getLocalizedMessage().contains("region.region"))
-				throw new ApiException(HttpStatus.CONFLICT, "El nombre de la región ya está registrado");
+				throw new ApiException(HttpStatus.CONFLICT, "El nombre de la categoría ya está registrado");
 			if (e.getLocalizedMessage().contains("region.tag"))
-				throw new ApiException(HttpStatus.CONFLICT, "El tag de la región ya está registrado");
+				throw new ApiException(HttpStatus.CONFLICT, "El tag de la categoría ya está registrado");
 			
 			throw new DBAccessException(e);
 		}
