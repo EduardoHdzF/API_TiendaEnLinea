@@ -9,5 +9,17 @@ public class DBAccessException extends RuntimeException{
 	public DBAccessException(DataAccessException e) {
 		this.exception = e;
 	}
+	
+	public DataAccessException getException() {
+		return exception;
+	}
 
+	public void setException(DataAccessException exception) {
+		this.exception = exception;
+	}
+	
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
 }
+
