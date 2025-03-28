@@ -7,7 +7,8 @@ public class DBAccessException extends RuntimeException{
 	private DataAccessException exception;
 	
 	public DBAccessException(DataAccessException e) {
-		this.exception = e;
+		super("Error de acceso a la base de datos: " + e.getMessage(), e);
+        this.exception = e;
 	}
 	
 	public DataAccessException getException() {

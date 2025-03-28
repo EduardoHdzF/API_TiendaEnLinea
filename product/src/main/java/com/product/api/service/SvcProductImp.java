@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 
@@ -52,46 +53,71 @@ public class SvcProductImp implements SvcProduct{
 	}
 
 	@Override
-	public ResponseEntity<DtoProductOut> getProduct(Integer id) {
+	public ResponseEntity<List<DtoProductOut>> getProduct(Integer id) {
 		try {
-			DtoProductOut product = repo.getProduct(id);
-			if(product == null )
-				throw new ApiException(HttpStatus.NOT_FOUND, "El id del producto no existe");
+			List<DtoProductOut> products = repo.getProduct(id);
+			if(products.isEmpty()) {				
+				try {
+					products = repo.findProduct(id);
+					
+					if(products.isEmpty())
+						throw new ApiException(HttpStatus.NOT_FOUND, "El id del producto no existe");
+						
+					return new ResponseEntity<>(products, HttpStatus.OK);
+				}catch (DataAccessException e) {
+					throw new DBAccessException(e);
+				}
+			}
 			
-			String image = readProductImageFile(id);
-			product.setImage(image);
+			List<String> imagesEncodes = readProductImageFile(id);
 			
-			return new ResponseEntity<>(product, HttpStatus.OK);
+			for(DtoProductOut product : products) {
+				product.setImage(imagesEncodes.get(0));
+				imagesEncodes.remove(0);
+			}			
+			
+			return new ResponseEntity<>(products, HttpStatus.OK);
 
 		}catch (DataAccessException e) {
 			throw new DBAccessException(e);
 		}
 	}
 	
-	private String readProductImageFile(Integer product_id) {
+	private List<String> readProductImageFile(Integer product_id) {
 	    try {
 	    	
-			ProductImage productImage = repoProductImage.findByProduct_id(product_id);
-			if(productImage == null)
-				return "";
-			
-			String imageUrl = productImage.getImage();
-			
-			// Si la URL comienza con "/" la eliminamos para obtener la ruta relativa
-		  	if (imageUrl.startsWith("/")) {
-		       	    imageUrl = imageUrl.substring(1);
-		   	}
-		  
-		  	// Construir el Path
-		  	Path imagePath = Paths.get(uploadDir, imageUrl);
-		  
-		  	// Verifica que el archivo exista
-		   	if (!Files.exists(imagePath))
-		   	    return "";
-		  
-			// Leer los bytes de la imagen y codificarlos a Base64
-			byte[] imageBytes = Files.readAllBytes(imagePath);
-			return Base64.getEncoder().encodeToString(imageBytes);
+	    	List<String> imagesEncodes = new ArrayList<>(); 
+	    	
+	    	List<ProductImage> productImages = repoProductImage.findByProduct_id(product_id);
+	    	if(productImages == null)
+	    		return imagesEncodes;
+	    	
+	    	for(ProductImage productImage : productImages) {
+	    	
+	    		String imageUrl = productImage.getImage();
+		    	
+		    	// Si la URL comienza con "/" la eliminamos para obtener la ruta relativa
+		      	if (imageUrl.startsWith("/")) {
+		           	    imageUrl = imageUrl.substring(1);
+		       	}
+		      
+		      	// Construir el Path
+		      	Path imagePath = Paths.get(uploadDir, imageUrl);
+		      
+		      	// Verifica que el archivo exista
+		       	if (!Files.exists(imagePath)) {
+		       	    imagesEncodes.add("");
+		       	} else {
+		       	
+		       		// Leer los bytes de la imagen y codificarlos a Base64
+				    byte[] imageBytes = Files.readAllBytes(imagePath);
+				    
+				    imagesEncodes.add(Base64.getEncoder().encodeToString(imageBytes));
+		       	}		      			   
+	    		
+	    	}
+	    	
+		    return imagesEncodes;
 	    
 	    }catch (DataAccessException e) {
 	    	throw new DBAccessException(e);

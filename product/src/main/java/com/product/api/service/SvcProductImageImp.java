@@ -51,7 +51,7 @@ public class SvcProductImageImp implements SvcProductImage{
 			// Crear la entidad CustomerImage y guardar la URL en la base de datos
 			ProductImage productImage = new ProductImage();
 			productImage.setProductId(in.getProduct_id());
-			productImage.setImage("/uploads/img/product/" + fileName);
+			productImage.setImage("/img/product/" + fileName);
 			productImage.setStatus(1); 
 
 			// Guardar la ruta de la imagen
@@ -70,6 +70,17 @@ public class SvcProductImageImp implements SvcProductImage{
 		    throw new DBAccessException(e);
 		}catch (IOException e) {
 			throw new ApiException(HttpStatus.INTERNAL_SERVER_ERROR, "Error al guardar el archivo");
+		}
+	}
+	
+	@Override
+	public ResponseEntity<ApiResponse> deleteProductImage(Integer id){
+		try {
+			repo.deleteById(id);
+			
+		    return new ResponseEntity<>(new ApiResponse("La imagen ha sido eliminada"), HttpStatus.OK);
+		}catch (DataAccessException e) {
+		    throw new DBAccessException(e);
 		}
 	}
 	

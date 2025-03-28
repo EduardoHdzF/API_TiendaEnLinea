@@ -14,7 +14,7 @@ public class ProductImage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "product_image_id")
-    private Integer productImageId;
+    private Integer product_image_id;
 
 
     @Column(name = "product_id")
@@ -27,18 +27,18 @@ public class ProductImage {
    
     @Column(name = "status")
     private Integer status;
-	
-	
-	public Integer getProductImageId() {
-		return productImageId;
+
+
+	public Integer getProduct_image_id() {
+		return product_image_id;
 	}
-	
-	
-	public void setProductImageId(Integer productImageId) {
-		this.productImageId = productImageId;
+
+
+	public void setProduct_image_id(Integer product_image_id) {
+		this.product_image_id = product_image_id;
 	}
-	
-	
+
+
 	public Integer getProductId() {
 		return product_id;
 	}

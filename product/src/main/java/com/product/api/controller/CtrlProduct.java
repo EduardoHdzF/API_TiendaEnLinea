@@ -37,7 +37,7 @@ public class CtrlProduct {
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<DtoProductOut> getProduct(@PathVariable Integer id) {
+	public ResponseEntity<List<DtoProductOut>> getProduct(@PathVariable Integer id) {
 		return svc.getProduct(id);
 	}
 
