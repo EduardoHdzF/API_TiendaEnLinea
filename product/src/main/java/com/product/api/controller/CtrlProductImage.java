@@ -16,16 +16,18 @@ import com.product.api.service.SvcProductImage;
 import com.product.commons.dto.ApiResponse;
 import com.product.exception.ApiException;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/product-image")
+@Tag(name = "Imagen-producto", description = "Catálogo de imágenes de un producto")
 public class CtrlProductImage {
 
 	@Autowired
 	SvcProductImage svc;
 	
-    @PostMapping
+    @PostMapping    
     public ResponseEntity<ApiResponse> createProductImage(@Valid @RequestBody DtoProductImageIn in, BindingResult bindingResult) {
 	        if (bindingResult.hasErrors())
 	        	throw new ApiException(HttpStatus.BAD_REQUEST, bindingResult.getFieldError().getDefaultMessage());

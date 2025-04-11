@@ -21,11 +21,13 @@ import com.product.api.service.SvcCategory;
 import com.product.commons.dto.ApiResponse;
 import com.product.exception.ApiException;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 
 @RestController
 @RequestMapping("/category")
+@Tag(name = "Categoría", description = "Catálogo de categorías")
 public class CtrlCategory {
 	
 	@Autowired
